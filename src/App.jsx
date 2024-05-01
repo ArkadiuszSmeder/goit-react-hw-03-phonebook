@@ -77,23 +77,16 @@ import { nanoid } from "nanoid";
 import { AppContainer } from "styled/styled-appContainer"; 
 
 function App() {
-  const [userData, setUserData] = useState(INITIAL_STATE);
+  // const [userData, setUserData] = useState(INITIAL_STATE);
 
-    // useEffect do zapisywania danych w localStorage
-    useEffect(() => {
-      localStorage.setItem("contacts", JSON.stringify(userData.contacts));
-    }, [userData.contacts]);
-
-  // useEffect do wczytania danych z localStorage
-  useEffect(() => {
+  const [userData, setUserData] = useState(() => {
     const storedContacts = JSON.parse(localStorage.getItem("contacts"));
-    if (storedContacts) {
-      setUserData((prev) => ({ 
-        ...prev, 
-        contacts: storedContacts 
-      }));
-    }
-  }, []);
+    return storedContacts ? { ...INITIAL_STATE, contacts: storedContacts } : INITIAL_STATE;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("contacts", JSON.stringify(userData.contacts));
+  }, [userData.contacts]);
 
   const handleFormSubmit = (formData) => {
     const newContact = {
